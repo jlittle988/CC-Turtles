@@ -1,1 +1,1 @@
-shell.run("git", "get", "jlittle988", "CC-Turtles", "master", "Quarry.lua", "Quarry.lua")
+shell.run("git", "get", "jlittle988", "CC-Turtles", "main", "Quarry.lua", "Quarry.lua")
