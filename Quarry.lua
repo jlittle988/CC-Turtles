@@ -12,15 +12,7 @@ depth = args[3]
 --if not length or not width or not depth then
     --error("Usage: Quarry [length] [width] [depth]")
 
--- checks fuel level and refuels if needed
-function checkFuel()
-    if turtle.getFuelLevel() <= REFUEL_AT then
-        slot = turtle.findItem(FUEL_ITEM)
-        if not slot then error("Out of fuel") end
-        turtle.refuel(REFUEL_COUNT)
-    end
-end
-
+-- Returns the slot number of item
 function findItem(item)
     for slot=1,16 do
         if turtle.getItemDetail(slot) == item then
@@ -29,8 +21,16 @@ function findItem(item)
     end
 end
 
+    -- Checks fuel level and refuels if needed
+function checkFuel()
+    if turtle.getFuelLevel() <= REFUEL_AT then
+        slot = turtle.findItem(FUEL_ITEM)
+        if not slot then error("Out of fuel") end
+        turtle.refuel(REFUEL_COUNT)
+    end
+end
 
--- dig up down and front, and check to make sure no new block fell into place (gravel)
+-- Dig up down and front, and check to make sure no new block fell into place (gravel)
 -- then move forward and check fuel level
 function digMove()
     while turtle.detect() do
