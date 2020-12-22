@@ -10,5 +10,6 @@ function dig()
     while turtle.detect()==1 do
         turtle.dig()
     end
+end
 
 dig()
