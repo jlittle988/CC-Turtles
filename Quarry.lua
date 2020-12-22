@@ -7,7 +7,7 @@ depth = args[3]
 
 -- dig up down and front, and check to make sure no new block fell into place (gravel)
 function dig()
-    while turtle.detect()==1 do
+    while turtle.detect() do
         turtle.dig()
     end
 end
