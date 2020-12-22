@@ -1,1 +1,1 @@
-turtle.move()
+turtle.dig()
