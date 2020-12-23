@@ -241,14 +241,20 @@ function goHome()
 end
 
 
+x_reverse = false
+y_reverse = false
+for i=1,depth do
+    for j=1,width do
+        if y_reverse then goBackward(length)
+        else goForward(length) end
+        y_reverse = not y_reverse
 
-reverse = false
-for i=1,width do
-    if reverse then goBackward(length)
-    else goForward(length) end
-    reverse = not reverse
+        if x_reverse then goLeft(1)
+        else goRight(1) end
+    end
+    x_reverse = not x_reverse
 
-    goRight(1)
+    goDown(3)
 end
 
 print(xpos)
