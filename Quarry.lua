@@ -110,13 +110,23 @@ for i=1,width do
 
     if dir then
         turtle.turnRight()
-        turtle.digMove()
+        digMove()
         turtle.turnRight()
         dir = false
     else
         turtle.turnLeft()
-        turtle.digMove()
+        digMove()
         turtle.turnLeft()
         dir = true
     end
+end
+
+turtle.turnRight()
+for i=1,width do
+    turtle.forward()
+end
+
+turtle.turnLeft()
+for i=1,length do
+    turtle.forward()
 end
