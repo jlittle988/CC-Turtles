@@ -2,6 +2,9 @@ FUEL_ITEM = "minecraft:coal"
 REFUEL_AT = 32 -- Fuel level at which the turtle will refuel
 REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 
+STORAGE_ITEM = "minecraft:chest"
+PICKUP_STORAGE = false
+
 -- length, width, depth (levels)
 args = {...}
 
@@ -25,7 +28,7 @@ end
 function checkFuel()
     if turtle.getFuelLevel() <= REFUEL_AT then
         slot = findItem(FUEL_ITEM)
-        if not slot then error("Out of fuel") end
+        if not slot then error('Out of fuel') end
         print('Refueling')
         turtle.refuel(REFUEL_COUNT)
     end
@@ -34,18 +37,47 @@ end
 -- Checks to see if inventory is full, and dumps to chest if so
 function checkInventory()
     for slot=1,16 do
-        if turtle.getItemCount()==0 then
+        if turtle.getItemCount(slot)==0 then
             return
         end
-        dumpInventory()
     end
+    dumpInventory()
+end
+
+-- Returns true if item is important and should stay in inventory
+function isImportant(slot)
+    item = turtle.getItemDetail()['name']
+    return item==FUEL_ITEM or item==STORAGE_ITEM
 end
 
 -- Dumps inventory to a chest and leaves it behind
 function dumpInventory()
     print('Dumping Inventory')
-end
+    
+    -- Find the storage item in inventory
+    storage_slot = findItem(STORAGE_ITEM)
+    if not storage_slot then error('Out of storage item') end
+    turtle.select(storage_slot)
 
+    -- Make sure the space above is free, and place it
+    while turtle.detectUp() do
+        turtle.digUp()
+    end
+    turtle.placeUp()
+
+    -- Drop all unimportant items into the storage
+    for slot=1,16 do
+        if not isImportant(slot) then
+            turtle.select(slot)
+            turtle.dropUp(slot)
+        end
+    end
+    
+    -- Break the storage if required
+    if PICKUP_STORAGE then
+        turtle.digUp()
+    end
+end
 
 -- Dig up down and front, and check to make sure no new block fell into place (gravel)
 -- then move forward and check fuel level
@@ -68,3 +100,5 @@ function digMove()
 
     checkFuel()
 end
+
+checkInventory()
