@@ -249,12 +249,14 @@ for i=1,depth do
         else goForward(length) end
         y_reverse = not y_reverse
 
-        if x_reverse then goLeft(1)
-        else goRight(1) end
+        if not (j==width) then
+            if x_reverse then goLeft(1)
+            else goRight(1) end
+        end
     end
     x_reverse = not x_reverse
 
-    goDown(3)
+    if not (i==depth) then goDown(3) end
 end
 
 print(xpos)
