@@ -46,7 +46,8 @@ end
 
 -- Returns true if item is important and should stay in inventory
 function isImportant(slot)
-    item = turtle.getItemDetail()['name']
+    if turtle.getItemCount(slot)==0 then return false end
+    item = turtle.getItemDetail(slot)['name']
     return item==FUEL_ITEM or item==STORAGE_ITEM
 end
 
@@ -82,7 +83,7 @@ end
 -- Dig up down and front, and check to make sure no new block fell into place (gravel)
 -- then move forward and check fuel level
 function digMove()
-    checkInventory()
+    checkFuel()
     
     while turtle.detect() do
         turtle.dig()
@@ -96,9 +97,11 @@ function digMove()
         turtle.digDown()
     end
 
-    turtle.forward()
+    checkInventory()
 
-    checkFuel()
+    turtle.forward()
 end
 
-checkInventory()
+for i=1,length do
+    digMove()
+end
