@@ -131,26 +131,26 @@ function digMove()
     checkInventory()
 
     turtle.forward()
-    if heading==0 then ypos+=1 end
-    if heading==1 then xpos+=1 end
-    if heading==2 then ypos-=1 end
-    if heading==3 then xpos-=1 end
+    if heading==0 then ypos=ypos+1 end
+    if heading==1 then xpos=xpos+1 end
+    if heading==2 then ypos=ypos+1 end
+    if heading==3 then xpos=xpos+1 end
 end
 
 function turnRight()
     turtle.turnRight()
-    heading += 1
+    heading=heading+1
     if heading>3 then heading=0 end
 end
 
 function turnLeft()
     turtle.turnLeft()
-    heading -= 1
+    heading=heading+1
     if heading<0 then heading=3 end
 end
 
 function faceHeading(newHeading)
-    while newHeading-heading!=0 do
+    while not (newHeading-heading==0) do
         turnRight()
     end
 end
@@ -189,6 +189,8 @@ end
 
 -- Travel to original location
 function goHome()
+    print('Going home')
+    
     if ypos<0 then
         goForward(-ypos)
     elseif ypos>0 then
@@ -203,6 +205,7 @@ function goHome()
 end
 
 
+
 reverse = false
 for i=1,width do
     if reverse then goBackward(length)
@@ -211,5 +214,8 @@ for i=1,width do
 
     goRight(1)
 end
+
+print(xpos)
+print(ypos)
 
 goHome()
