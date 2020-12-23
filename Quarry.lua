@@ -102,6 +102,21 @@ function digMove()
     turtle.forward()
 end
 
-for i=1,length do
-    digMove()
+dir = true
+for i=1,width do
+    for j=1,length do
+        digMove()
+    end
+
+    if dir then
+        turtle.turnRight()
+        turtle.digMove()
+        turtle.turnRight()
+        dir = false
+    else
+        turtle.turnLeft()
+        turtle.digMove()
+        turtle.turnLeft()
+        dir = true
+    end
 end
