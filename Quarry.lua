@@ -156,6 +156,8 @@ function faceHeading(newHeading)
 end
 
 function goForward(distance)
+    if distance<0 then goBackward(-distance)
+    
     faceHeading(0) -- Face forward
 
     for i=1,distance do
@@ -164,6 +166,8 @@ function goForward(distance)
 end
 
 function goBackward(distance)
+    if distance<0 then goForward(-distance)
+    
     faceHeading(2) -- Face backward
 
     for i=1,distance do
@@ -172,6 +176,8 @@ function goBackward(distance)
 end
 
 function goRight(distance)
+    if distance<0 then goLeft(-distance)
+    
     faceHeading(1) -- Face right
 
     for i=1,distance do
@@ -180,6 +186,8 @@ function goRight(distance)
 end
 
 function goLeft(distance)
+    if distance<0 then goRight(-distance)
+    
     faceHeading(3) -- Face left
 
     for i=1,distance do
@@ -188,6 +196,8 @@ function goLeft(distance)
 end
 
 function goUp(distance)
+    if distance<0 then goDown(-distance)
+    
     for i=1,distance do
         checkFuel()
 
@@ -202,6 +212,8 @@ function goUp(distance)
 end
 
 function goDown(distance)
+    if distance<0 then goUp(-distance)
+    
     for i=1,distance do
         checkFuel()
 
@@ -219,47 +231,50 @@ end
 function goHome()
     print('Going home')
     
-    if ypos<0 then
-        goForward(-ypos)
-    elseif ypos>0 then
-        goBackward(ypos)
-    end
+    goHomeX()
+    goHomeY()
+    goHomeZ()
 
+    faceHeading(0)
+end
+
+function goHomeX()
     if xpos<0 then
         goRight(-xpos)
     elseif xpos>0 then
         goLeft(xpos)
     end
+end
 
+function goHomeY()
+    if ypos<0 then
+        goForward(-ypos)
+    elseif ypos>0 then
+        goBackward(ypos)
+    end
+end
+
+function goHomeZ()
     if zpos<0 then
         goUp(-zpos)
     elseif zpos>0 then
         goDown(zpos)
     end
-
-    faceHeading(0)
 end
 
-
-x_reverse = false
-y_reverse = false
-for i=1,depth do
-    for j=1,width do
-        if y_reverse then goBackward(length)
-        else goForward(length) end
-        y_reverse = not y_reverse
-
-        if not (j==width) then
-            if x_reverse then goLeft(1)
-            else goRight(1) end
-        end
+function mineLayer(w, l)
+    xdir = w / math.abs(w)
+    ydir = 1
+    for i=1,w-2 do
+        goForward(l*ydir)
+        goRight(xdir)
+        ydir = ydir*-1
     end
-    x_reverse = not x_reverse
-
-    if not (i==depth) then goDown(3) end
 end
 
-print(xpos)
-print(ypos)
+mineLayer(width, length)
 
 goHome()
+
+
+
