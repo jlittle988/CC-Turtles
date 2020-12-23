@@ -151,7 +151,8 @@ end
 
 function faceHeading(newHeading)
     while not (newHeading-heading==0) do
-        turnRight()
+        if (newHeading-heading)>0 then turnRight()
+        elseif (newHeading-heading)<0 then turnLeft() end
     end
 end
 
@@ -264,7 +265,7 @@ end
 
 function mineLayer(w, l)
     xdir = w / math.abs(w)
-    w = w - xdir
+    l = l - (l / math.abs(l))
     ydir = 1
     for i=1,w-1 do
         goForward(l*ydir)
@@ -274,8 +275,13 @@ function mineLayer(w, l)
     goForward(l*ydir)
 end
 
+for i=1,depth-1 do
+    mineLayer(width, length)
+    goHomeX()
+    goHomeY()
+    goDown(3)
+end
 mineLayer(width, length)
-
 goHome()
 
 
