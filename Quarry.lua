@@ -156,7 +156,7 @@ function faceHeading(newHeading)
 end
 
 function goForward(distance)
-    if distance<0 then goBackward(-distance)
+    if distance<0 then goBackward(-distance) end
     
     faceHeading(0) -- Face forward
 
@@ -166,7 +166,7 @@ function goForward(distance)
 end
 
 function goBackward(distance)
-    if distance<0 then goForward(-distance)
+    if distance<0 then goForward(-distance) end
     
     faceHeading(2) -- Face backward
 
@@ -176,7 +176,7 @@ function goBackward(distance)
 end
 
 function goRight(distance)
-    if distance<0 then goLeft(-distance)
+    if distance<0 then goLeft(-distance) end
     
     faceHeading(1) -- Face right
 
@@ -186,7 +186,7 @@ function goRight(distance)
 end
 
 function goLeft(distance)
-    if distance<0 then goRight(-distance)
+    if distance<0 then goRight(-distance) end
     
     faceHeading(3) -- Face left
 
@@ -196,7 +196,7 @@ function goLeft(distance)
 end
 
 function goUp(distance)
-    if distance<0 then goDown(-distance)
+    if distance<0 then goDown(-distance) end
     
     for i=1,distance do
         checkFuel()
@@ -212,7 +212,7 @@ function goUp(distance)
 end
 
 function goDown(distance)
-    if distance<0 then goUp(-distance)
+    if distance<0 then goUp(-distance) end
     
     for i=1,distance do
         checkFuel()
@@ -264,12 +264,14 @@ end
 
 function mineLayer(w, l)
     xdir = w / math.abs(w)
+    w = w - xdir
     ydir = 1
-    for i=1,w-2 do
+    for i=1,w-1 do
         goForward(l*ydir)
         goRight(xdir)
         ydir = ydir*-1
     end
+    goForward(l*ydir)
 end
 
 mineLayer(width, length)
