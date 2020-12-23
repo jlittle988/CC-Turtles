@@ -145,7 +145,7 @@ end
 
 function turnLeft()
     turtle.turnLeft()
-    heading=heading+1
+    heading=heading-1
     if heading<0 then heading=3 end
 end
 
