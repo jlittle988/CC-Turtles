@@ -5,6 +5,18 @@ REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 STORAGE_ITEM = "minecraft:chest"
 PICKUP_STORAGE = false
 
+-- heading relative to placement orientation
+heading = 0
+-- 0: forward
+-- 1: right
+-- 2: backward
+-- 3: left
+
+-- position relative to placement position
+ypos = 0
+xpos = 0
+zpos = 0
+
 -- length, width, depth (levels)
 args = {...}
 
@@ -45,10 +57,23 @@ function checkInventory()
 end
 
 -- Returns true if item is important and should stay in inventory
-function isImportant(slot)
+function isItemImportant(slot)
     if turtle.getItemCount(slot)==0 then return false end
     item = turtle.getItemDetail(slot)['name']
     return item==FUEL_ITEM or item==STORAGE_ITEM
+end
+
+-- Returns true if the block in the given direction is important and shouldn't be mined
+function isBlockImportant(dir)
+    if dir=='f' then
+        s,item = turtle.inspect()
+    elseif dir=='u' then
+        s,item = turtle.inspectUp()
+    elseif dir=='d' then
+        s,item = turtle.inspectDown()
+    end
+
+    return item['name']==STORAGE_ITEM
 end
 
 -- Dumps inventory to a chest and leaves it behind
@@ -68,7 +93,7 @@ function dumpInventory()
 
     -- Drop all unimportant items into the storage
     for slot=1,16 do
-        if not isImportant(slot) then
+        if not isItemImportant(slot) then
             turtle.select(slot)
             turtle.dropUp(slot)
         end
@@ -86,47 +111,105 @@ function digMove()
     checkFuel()
     
     while turtle.detect() do
-        turtle.dig()
+        if not isBlockImportant('f') then
+            turtle.dig()
+        end
     end
 
     while turtle.detectUp() do
-        turtle.digUp()
+        if not isBlockImportant('u') then
+            turtle.digUp()
+        end
     end
 
     while turtle.detectDown() do
-        turtle.digDown()
+        if not isBlockImportant('d') then
+            turtle.digDown()
+        end
     end
 
     checkInventory()
 
     turtle.forward()
+    if heading==0 then ypos+=1 end
+    if heading==1 then xpos+=1 end
+    if heading==2 then ypos-=1 end
+    if heading==3 then xpos-=1 end
 end
 
-dir = true
-for i=1,width do
-    for j=1,length do
+function turnRight()
+    turtle.turnRight()
+    heading += 1
+    if heading>3 then heading=0 end
+end
+
+function turnLeft()
+    turtle.turnLeft()
+    heading -= 1
+    if heading<0 then heading=3 end
+end
+
+function faceHeading(newHeading)
+    while newHeading-heading!=0 do
+        turnRight()
+    end
+end
+
+function goForward(distance)
+    faceHeading(0) -- Face forward
+
+    for i=1,distance do
         digMove()
     end
+end
 
-    if dir then
-        turtle.turnRight()
+function goBackward(distance)
+    faceHeading(2) -- Face backward
+
+    for i=1,distance do
         digMove()
-        turtle.turnRight()
-        dir = false
-    else
-        turtle.turnLeft()
-        digMove()
-        turtle.turnLeft()
-        dir = true
     end
 end
 
-turtle.turnRight()
-for i=1,width do
-    turtle.forward()
+function goRight(distance)
+    faceHeading(1) -- Face right
+
+    for i=1,distance do
+        digMove()
+    end
 end
 
-turtle.turnLeft()
-for i=1,length do
-    turtle.forward()
+function goLeft(distance)
+    faceHeading(3) -- Face left
+
+    for i=1,distance do
+        digMove()
+    end
 end
+
+-- Travel to original location
+function goHome()
+    if ypos<0 then
+        goForward(-ypos)
+    elseif ypos>0 then
+        goBackward(ypos)
+    end
+
+    if xpos<0 then
+        goRight(-xpos)
+    elseif xpos>0 then
+        goLeft(xpos)
+    end
+end
+
+
+reverse = false
+for i=1,width do
+    if reverse then goBackward(length)
+    else goForward(length) end
+    reverse = not reverse
+
+    goRight(1)
+end
+
+goHome()
