@@ -15,24 +15,43 @@ depth = args[3]
 -- Returns the slot number of item
 function findItem(item)
     for slot=1,16 do
-        if turtle.getItemDetail(slot) == item then
+        if turtle.getItemDetail(slot)['name'] == item then
             return slot
         end
     end
 end
 
-    -- Checks fuel level and refuels if needed
+-- Checks fuel level and refuels if needed
 function checkFuel()
     if turtle.getFuelLevel() <= REFUEL_AT then
-        slot = turtle.findItem(FUEL_ITEM)
+        slot = findItem(FUEL_ITEM)
         if not slot then error("Out of fuel") end
+        print('Refueling')
         turtle.refuel(REFUEL_COUNT)
     end
 end
 
+-- Checks to see if inventory is full, and dumps to chest if so
+function checkInventory()
+    for slot=1,16 do
+        if turtle.getItemCount()==0 then
+            return
+        end
+        dumpInventory()
+    end
+end
+
+-- Dumps inventory to a chest and leaves it behind
+function dumpInventory()
+    print('Dumping Inventory')
+end
+
+
 -- Dig up down and front, and check to make sure no new block fell into place (gravel)
 -- then move forward and check fuel level
 function digMove()
+    checkInventory()
+    
     while turtle.detect() do
         turtle.dig()
     end
@@ -49,5 +68,3 @@ function digMove()
 
     checkFuel()
 end
-
-checkFuel()
