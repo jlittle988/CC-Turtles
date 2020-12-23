@@ -99,7 +99,7 @@ function dumpInventory()
     for slot=1,16 do
         if not isItemImportant(slot) then
             turtle.select(slot)
-            turtle.dropUp(slot)
+            turtle.dropUp()
         end
     end
     
