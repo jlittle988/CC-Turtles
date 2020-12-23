@@ -1,9 +1,9 @@
 FUEL_ITEM = "minecraft:coal"
-REFUEL_AT = 32 -- Fuel level at which the turtle will refuel
+REFUEL_AT = 5 -- Fuel level at which the turtle will refuel
 REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 
-STORAGE_ITEM = "minecraft:chest"
-PICKUP_STORAGE = false
+STORAGE_ITEM = "enderstorage:ender_chest"
+PICKUP_STORAGE = true
 
 -- heading relative to placement orientation
 heading = 0
