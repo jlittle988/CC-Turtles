@@ -45,6 +45,7 @@ function checkFuel()
         slot = findItem(FUEL_ITEM)
         if not slot then error('Out of fuel') end
         print('Refueling')
+        turtle.select(slot)
         turtle.refuel(REFUEL_COUNT)
     end
 end
