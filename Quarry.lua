@@ -114,21 +114,18 @@ function digMove()
     checkFuel()
     
     while turtle.detect() do
-        if not isBlockImportant('f') then
-            turtle.dig()
-        end
+        if isBlockImportant('f') then error('Encountered obstacle') end
+        turtle.dig()
     end
 
     while turtle.detectUp() do
-        if not isBlockImportant('u') then
-            turtle.digUp()
-        end
+        if isBlockImportant('u') then error('Encountered obstacle') end
+        turtle.digUp()
     end
 
     while turtle.detectDown() do
-        if not isBlockImportant('d') then
-            turtle.digDown()
-        end
+        if isBlockImportant('d') then error('Encountered obstacle') end
+        turtle.digDown()
     end
 
     checkInventory()
@@ -190,6 +187,34 @@ function goLeft(distance)
     end
 end
 
+function goUp(distance)
+    for i=1,distance do
+        checkFuel()
+
+        while turtle.detectUp() do
+            if isBlockImportant('u') then error('Encountered obstacle') end
+            turtle.digUp()
+        end
+
+        turtle.up()
+        zpos=zpos+1
+    end
+end
+
+function goDown(distance)
+    for i=1,distance do
+        checkFuel()
+
+        while turtle.detectDown() do
+            if isBlockImportant('d') then error('Encountered obstacle') end
+            turtle.digDown()
+        end
+
+        turtle.down()
+        zpos=zpos-1
+    end
+end
+
 -- Travel to original location
 function goHome()
     print('Going home')
@@ -205,6 +230,14 @@ function goHome()
     elseif xpos>0 then
         goLeft(xpos)
     end
+
+    if zpos<0 then
+        goUp(-zpos)
+    elseif zpos>0 then
+        goDown(zpos)
+    end
+
+    faceHeading(0)
 end
 
 
