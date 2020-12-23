@@ -1,5 +1,5 @@
 FUEL_ITEM = "minecraft:coal"
-REFUEL_AT = 29 -- Fuel level at which the turtle will refuel
+REFUEL_AT = 30 -- Fuel level at which the turtle will refuel
 REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 
 -- length, width, depth (levels)
