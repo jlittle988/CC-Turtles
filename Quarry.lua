@@ -30,10 +30,13 @@ depth = args[3]
 -- Returns the slot number of item
 function findItem(item)
     for slot=1,16 do
-        if turtle.getItemDetail(slot)['name'] == item then
-            return slot
+        if turtle.getItemCount(slot)>0 then
+            if turtle.getItemDetail(slot)['name'] == item then
+                return slot
+            end
         end
     end
+    return nil
 end
 
 -- Checks fuel level and refuels if needed
@@ -133,8 +136,8 @@ function digMove()
     turtle.forward()
     if heading==0 then ypos=ypos+1 end
     if heading==1 then xpos=xpos+1 end
-    if heading==2 then ypos=ypos+1 end
-    if heading==3 then xpos=xpos+1 end
+    if heading==2 then ypos=ypos-1 end
+    if heading==3 then xpos=xpos-1 end
 end
 
 function turnRight()
