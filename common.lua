@@ -2,10 +2,10 @@ com = {}
 
 -- heading relative to placement orientation
 com.heading = 0
--- 0: forward
--- 1: right
--- 2: backward
--- 3: left
+-- 0: north
+-- 1: east
+-- 2: south
+-- 3: west
 
 -- Returns the slot number of item
 function com.findItem(item)
@@ -20,13 +20,13 @@ function com.findItem(item)
 end
 
 -- Checks fuel level and refuels if needed
-function com.checkFuel()
-    if turtle.getFuelLevel() <= REFUEL_AT then
-        slot = findItem(FUEL_ITEM)
+function com.checkFuel(fuel_item, refuel_at, refuel_count)
+    if turtle.getFuelLevel() <= refuel_at then
+        slot = com.findItem(fuel_item)
         if not slot then error('Out of fuel') end
         print('Refueling')
         turtle.select(slot)
-        turtle.refuel(REFUEL_COUNT)
+        turtle.refuel(refuel_count)
     end
 end
 
@@ -37,7 +37,7 @@ function com.checkInventory()
             return
         end
     end
-    dumpInventory()
+    com.dumpInventory()
 end
 
 -- Returns true if item is important and should stay in inventory
@@ -70,7 +70,7 @@ function com.dumpInventory(storage_item, pickup_storage)
     print('Dumping Inventory')
     
     -- Find the storage item in inventory
-    local storage_slot = findItem(storage_item)
+    local storage_slot = com.findItem(storage_item)
     if not storage_slot then error('Out of storage item') end
     turtle.select(storage_slot)
 
@@ -82,7 +82,7 @@ function com.dumpInventory(storage_item, pickup_storage)
 
     -- Drop all unimportant items into the storage
     for slot=1,16 do
-        if not isItemImportant(slot) then
+        if not com.isItemImportant(slot) then
             turtle.select(slot)
             turtle.dropUp()
         end
@@ -96,92 +96,100 @@ end
 
 function com.turnRight()
     turtle.turnRight()
-    heading=heading+1
-    if heading>3 then heading=0 end
+    com.heading=com.heading+1
+    if com.heading>3 then com.heading=0 end
 end
 
 function com.turnLeft()
     turtle.turnLeft()
-    heading=heading-1
-    if heading<0 then heading=3 end
+    com.heading=com.heading-1
+    if com.heading<0 then com.heading=3 end
 end
 
 function com.faceHeading(newHeading)
-    while not (newHeading-heading==0) do
-        if (newHeading-heading)>0 then turnRight()
-        elseif (newHeading-heading)<0 then turnLeft() end
+    while not (newHeading-com.heading==0) do
+        if (newHeading-com.heading)>0 then com.turnRight()
+        elseif (newHeading-com.heading)<0 then com.turnLeft() end
     end
 end
 
 function com.goForward(distance)
-    if distance<0 then goBackward(-distance) end
+    if distance<0 then com.goBackward(-distance) end
     
-    faceHeading(0) -- Face forward
+    com.faceHeading(0) -- Face forward
 
     for i=1,distance do
-        digMove()
+        com.checkFuel()
+        while turtle.detect() do
+            turtle.dig()
+        end
+        turtle.forward()
     end
 end
 
 function com.goBackward(distance)
-    if distance<0 then goForward(-distance) end
+    if distance<0 then com.goForward(-distance) end
     
-    faceHeading(2) -- Face backward
+    com.faceHeading(2) -- Face backward
 
     for i=1,distance do
-        digMove()
+        com.checkFuel()
+        while turtle.detect() do
+            turtle.dig()
+        end
+        turtle.forward()
     end
 end
 
 function com.goRight(distance)
-    if distance<0 then goLeft(-distance) end
+    if distance<0 then com.goLeft(-distance) end
     
-    faceHeading(1) -- Face right
+    com.faceHeading(1) -- Face right
 
     for i=1,distance do
-        digMove()
+        com.checkFuel()
+        while turtle.detect() do
+            turtle.dig()
+        end
+        turtle.forward()
     end
 end
 
 function com.goLeft(distance)
-    if distance<0 then goRight(-distance) end
+    if distance<0 then com.goRight(-distance) end
     
-    faceHeading(3) -- Face left
+    com.faceHeading(3) -- Face left
 
     for i=1,distance do
-        digMove()
+        com.checkFuel()
+        while turtle.detect() do
+            turtle.dig()
+        end
+        turtle.forward()
     end
 end
 
 function com.goUp(distance)
-    if distance<0 then goDown(-distance) end
+    if distance<0 then com.goDown(-distance) end
     
     for i=1,distance do
-        checkFuel()
-
+        com.checkFuel()
         while turtle.detectUp() do
-            if isBlockImportant('u') then error('Encountered obstacle') end
             turtle.digUp()
         end
-
         turtle.up()
-        zpos=zpos+1
     end
 end
 
 function com.goDown(distance)
-    if distance<0 then goUp(-distance) end
+    if distance<0 then com.goUp(-distance) end
     
     for i=1,distance do
-        checkFuel()
-
+        com.checkFuel()
         while turtle.detectDown() do
-            if isBlockImportant('d') then error('Encountered obstacle') end
             turtle.digDown()
         end
-
         turtle.down()
-        zpos=zpos-1
     end
 end
 
@@ -193,18 +201,18 @@ end
 function com.goHome()
     print('Going home')
     
-    goHomeX()
-    goHomeY()
-    goHomeZ()
+    com.goHomeX()
+    com.goHomeY()
+    com.goHomeZ()
 
-    faceHeading(0)
+    com.faceHeading(0)
 end
 
 function com.goHomeX()
     if xpos<0 then
-        goRight(-xpos)
+        com.goRight(-xpos)
     elseif xpos>0 then
-        goLeft(xpos)
+        com.goLeft(xpos)
     end
 end
 
@@ -222,6 +230,23 @@ function com.goHomeZ()
     elseif zpos>0 then
         goDown(zpos)
     end
+end
+
+function com.getHeading()
+    local x1,y1,z1 = gps.locate()
+
+    com.checkFuel()
+    while turtle.detect() do
+        turtle.dig()
+    end
+    turtle.forward()
+
+    local x2,y2,z2 = gps.locate()
+
+    if x2<x1 then heading=3
+    elseif x2>x1 then heading=1
+    elseif z2<z1 then heading=0
+    elseif z2>z1 then heading=2 end
 end
 
 return com
