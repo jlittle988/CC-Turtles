@@ -37,7 +37,7 @@ end
 function isItemImportant(slot)
     if turtle.getItemCount(slot)==0 then return false end
     item = turtle.getItemDetail(slot)['name']
-    return item==FUEL_ITEM
+    return item==FUEL_ITEM or item==SAPLING_ITEM or item==FERTILIZER_ITEM
 end
 
 -- Returns the slot number of item
@@ -114,7 +114,9 @@ end
 while true do
     faceHeading(0)
     local s,data = turtle.inspect()
-    if data.name==SAPLING_ITEM then
+    if not s then
+        plantSapling()
+    elseif data.name==SAPLING_ITEM then
         fertilize()
     elseif data.name==LOG_BLOCK then
         chopTree()
