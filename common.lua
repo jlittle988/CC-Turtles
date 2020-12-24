@@ -1,5 +1,13 @@
 com = {}
 
+com.IMPORTANT_ITEMS
+com.FUEL_ITEM
+com.REFUEL_AT
+com.REFUEL_COUNT
+com.STORAGE_ITEM
+com.PICKUP_STORAGE
+
+
 -- heading relative to placement orientation
 com.heading = 0
 -- 0: north
@@ -20,13 +28,13 @@ function com.findItem(item)
 end
 
 -- Checks fuel level and refuels if needed
-function com.checkFuel(fuel_item, refuel_at, refuel_count)
-    if turtle.getFuelLevel() <= refuel_at then
-        slot = com.findItem(fuel_item)
+function com.checkFuel()
+    if turtle.getFuelLevel() <= com.REFUEL_AT then
+        slot = com.findItem(com.FUEL_ITEM)
         if not slot then error('Out of fuel') end
         print('Refueling')
         turtle.select(slot)
-        turtle.refuel(refuel_count)
+        turtle.refuel(com.REFUEL_COUNT)
     end
 end
 
@@ -41,11 +49,11 @@ function com.checkInventory()
 end
 
 -- Returns true if item is important and should stay in inventory
-function com.isItemImportant(slot, important_items)
+function com.isItemImportant(slot)
     if turtle.getItemCount(slot)==0 then return false end
     local item = turtle.getItemDetail(slot)['name']
     local important = false
-    for _,important_item in ipairs(important_items) do
+    for _,important_item in ipairs(com.IMPORTANT_ITEMS) do
         if item==important_item then important=true end
     end
     return important
@@ -53,7 +61,7 @@ end
 
 -- DEPRECIATED
 -- Returns true if the block in the given direction is important and shouldn't be mined
-function com.isBlockImportant(dir)
+function isBlockImportant(dir)
     if dir=='f' then
         s,item = turtle.inspect()
     elseif dir=='u' then
@@ -66,11 +74,11 @@ function com.isBlockImportant(dir)
 end
 
 -- Dumps inventory to storage item
-function com.dumpInventory(storage_item, pickup_storage)
+function com.dumpInventory()
     print('Dumping Inventory')
     
     -- Find the storage item in inventory
-    local storage_slot = com.findItem(storage_item)
+    local storage_slot = com.findItem(com.STORAGE_ITEM)
     if not storage_slot then error('Out of storage item') end
     turtle.select(storage_slot)
 
@@ -89,7 +97,7 @@ function com.dumpInventory(storage_item, pickup_storage)
     end
     
     -- Break the storage if required
-    if pickup_storage then
+    if com.PICKUP_STORAGE then
         turtle.digUp()
     end
 end
@@ -243,10 +251,10 @@ function com.getHeading()
 
     local x2,y2,z2 = gps.locate()
 
-    if x2<x1 then heading=3
-    elseif x2>x1 then heading=1
-    elseif z2<z1 then heading=0
-    elseif z2>z1 then heading=2 end
+    if x2<x1 then com.heading=3
+    elseif x2>x1 then com.heading=1
+    elseif z2<z1 then com.heading=0
+    elseif z2>z1 then com.heading=2 end
 end
 
 return com
