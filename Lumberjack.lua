@@ -1,8 +1,10 @@
 LOG_BLOCK = 'minecraft:oak_log'
 MAX_HEIGHT = 16
+FERTILIZER_ITEM = 'minecraft:bone_meal'
+SAPLING_ITEM = 'minecraft:oak_sapling'
 
 FUEL_ITEM = 'minecraft:coal'
-REFUEL_AT = 5 -- Fuel level at which the turtle will refuel
+REFUEL_AT = 32 -- Fuel level at which the turtle will refuel
 REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 
 -- heading relative to placement orientation
@@ -66,6 +68,7 @@ function chopTree()
     i=0
     s,data = turtle.inspect()
     while data.name==LOG_BLOCK do
+        checkFuel()
         turtle.dig()
         turtle.digUp()
         turtle.up()
@@ -76,6 +79,7 @@ function chopTree()
 
     -- Go back down
     while i>0 do
+        checkFuel()
         turtle.down()
         i=i-1
     end
@@ -91,11 +95,28 @@ function deposit()
     end
 end
 
+function plantSapling()
+    slot = findItem(SAPLING_ITEM)
+    if slot then
+        turtle.select(slot)
+        turtle.place()
+    end
+end
+
+function fertilize()
+    slot = findItem(FERTILIZER_ITEM)
+    if slot then
+        turtle.select(slot)
+        turtle.place()
+    end
+end
+
 while true do
     faceHeading(0)
     local s,data = turtle.inspect()
-    if data.name==LOG_BLOCK then
-        checkFuel()
+    if data.name==SAPLING_ITEM then
+        fertilize()
+    elseif data.name==LOG_BLOCK then
         chopTree()
         faceHeading(2)
         deposit()
