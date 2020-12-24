@@ -62,7 +62,8 @@ function chopTree()
     
     -- Dig the tree
     i=0
-    while turtle.inspect()['name']==LOG_BLOCK do
+    local s,data = turtle.inspect()
+    while data.name==LOG_BLOCK do
         turtle.dig()
         turtle.digUp()
         turtle.up()
@@ -89,7 +90,8 @@ function deposit()
 end
 
 while true do
-    if turtle.inspect()['name']==LOG_BLOCK then
+    local s,data = turtle.inspect()
+    if data.name==LOG_BLOCK then
         checkFuel()
         chopTree()
         deposit()
