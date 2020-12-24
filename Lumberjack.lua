@@ -68,6 +68,7 @@ function chopTree()
         turtle.digUp()
         turtle.up()
         i=i+1
+        local s,data = turtle.inspect()
     end
 
     -- Go back down
