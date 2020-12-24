@@ -1,5 +1,8 @@
-shell.run('rm', 'Quarry.lua')
-shell.run('wget', 'https://raw.githubusercontent.com/jlittle988/CC-Turtles/main/Quarry.lua', 'Quarry.lua')
+shell.run('rm', 'common.lua')
+shell.run('wget', 'https://raw.githubusercontent.com/jlittle988/CC-Turtles/main/common.lua', 'common.lua')
 
-shell.run('rm', 'Lumberjack.lua')
-shell.run('wget', 'https://raw.githubusercontent.com/jlittle988/CC-Turtles/main/Lumberjack.lua', 'Lumberjack.lua')
+shell.run('rm', 'quarry.lua')
+shell.run('wget', 'https://raw.githubusercontent.com/jlittle988/CC-Turtles/main/quarry.lua', 'quarry.lua')
+
+shell.run('rm', 'lumberjack.lua')
+shell.run('wget', 'https://raw.githubusercontent.com/jlittle988/CC-Turtles/main/lumberjack.lua', 'lumberjack.lua')
