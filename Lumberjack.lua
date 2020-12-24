@@ -1,5 +1,9 @@
 LOG_BLOCK = 'minecraft:oak_log'
+MAX_HEIGHT = 16
+
 FUEL_ITEM = 'minecraft:coal'
+REFUEL_AT = 5 -- Fuel level at which the turtle will refuel
+REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 
 -- heading relative to placement orientation
 heading = 0
@@ -69,6 +73,9 @@ function chopTree()
         turtle.up()
         i=i+1
         local s,data = turtle.inspect()
+        print(i)
+        print(data.name)
+        if i>=MAX_HEIGHT then break end
     end
 
     -- Go back down
