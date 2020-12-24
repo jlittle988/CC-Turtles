@@ -62,19 +62,15 @@ function checkFuel()
 end
 
 function chopTree()
-    faceHeading(0) -- Face forward
-    
     -- Dig the tree
     i=0
-    local s,data = turtle.inspect()
+    s,data = turtle.inspect()
     while data.name==LOG_BLOCK do
         turtle.dig()
         turtle.digUp()
         turtle.up()
         i=i+1
-        local s,data = turtle.inspect()
-        print(i)
-        print(data.name)
+        s,data = turtle.inspect()
         if i>=MAX_HEIGHT then break end
     end
 
@@ -86,8 +82,6 @@ function chopTree()
 end
 
 function deposit()
-    faceHeading(2) -- Face backward
-
     -- Drop all unimportant items
     for slot=1,16 do
         if not isItemImportant(slot) then
@@ -98,10 +92,13 @@ function deposit()
 end
 
 while true do
+    faceHeading(0)
     local s,data = turtle.inspect()
     if data.name==LOG_BLOCK then
         checkFuel()
         chopTree()
+        faceHeading(2)
         deposit()
+        faceHeading(0)
     end
 end
