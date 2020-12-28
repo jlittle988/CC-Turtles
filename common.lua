@@ -1,10 +1,13 @@
 com = {}
 
-com.IMPORTANT_ITEMS = nil
-com.FUEL_ITEM = 'minecraft:coal'
+com.IMPORTANT_ITEMS = {}
+com.FUEL_ITEM = 'minecraft:lava_bucket'
+com.FUEL_STORAGE_ITEM = 'enderstorage:ender_chest'
+com.FUEL_STORAGE_ITEM_SLOT = 2
 com.REFUEL_AT = 5
 com.REFUEL_COUNT = 1
 com.STORAGE_ITEM = 'enderstorage:ender_chest'
+com.STORAGE_ITEM_SLOT = 1
 com.PICKUP_STORAGE = true
 
 
@@ -40,12 +43,26 @@ end
 -- Checks fuel level and refuels if needed
 function com.checkFuel()
     if turtle.getFuelLevel() <= com.REFUEL_AT then
-        slot = com.findItem(com.FUEL_ITEM)
-        if not slot then error('Out of fuel') end
-        print('Refueling')
-        turtle.select(slot)
-        turtle.refuel(com.REFUEL_COUNT)
+        com.refuel()
     end
+end
+
+function com.refuel()
+    --slot = com.findItem(com.FUEL_ITEM)
+    --if not slot then error('Out of fuel') end
+    print('Refueling')
+
+    turtle.select(com.FUEL_STORAGE_ITEM_SLOT)
+    while turtle.detectUp() do
+        turtle.digUp()
+    end
+    turtle.placeUp()
+
+    turtle.suckUp()
+    turtle.refuel()
+    turtle.dropUp()
+
+    turtle.digUp()
 end
 
 -- Checks to see if inventory is full, and dumps to chest if so
@@ -89,9 +106,9 @@ function com.dumpInventory()
     print('Dumping Inventory')
     
     -- Find the storage item in inventory
-    local storage_slot = com.findItem(com.STORAGE_ITEM)
-    if not storage_slot then error('Out of storage item') end
-    turtle.select(storage_slot)
+    --local storage_slot = com.findItem(com.STORAGE_ITEM)
+    --if not storage_slot then error('Out of storage item') end
+    turtle.select(com.STORAGE_ITEM_SLOT)
 
     -- Make sure the space above is free, and place it
     while turtle.detectUp() do
@@ -109,6 +126,7 @@ function com.dumpInventory()
     
     -- Break the storage if required
     if com.PICKUP_STORAGE then
+        turtle.select(com.STORAGE_ITEM_SLOT)
         turtle.digUp()
     end
 end

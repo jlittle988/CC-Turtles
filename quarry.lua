@@ -1,14 +1,14 @@
 require 'common'
 
-com.FUEL_ITEM = "minecraft:coal"
+com.FUEL_ITEM = 'minecraft:lava_bucket'
 com.REFUEL_AT = 5 -- Fuel level at which the turtle will refuel
 com.REFUEL_COUNT = 1 -- How many fuel items to consume at each refuel
 
-com.STORAGE_ITEM = "enderstorage:ender_chest"
+com.STORAGE_ITEM = 'enderstorage:ender_chest'
 com.PICKUP_STORAGE = true
 
 com.IMPORTANT_ITEMS = {
-    [1] = com.FUEL_ITEM,
+    [1] = com.FUEL_STORAGE_ITEM,
     [2] = com.STORAGE_ITEM,
 }
 
